@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% url "data-entry:index" %}</title>
+</head>
+<body>
+
+    <h1>{{ customer.surname }} - {{ customer.given_names }}</h1>
+    <ul>
+    {% for bank_account in customer.bankaccount_set.all %}
+        <li>{{ bank_account.account_number }}</li>
+    {% endfor %}
+    </ul>
+
+    <form action="{% url 'data-entry:vote' customer.id %}" method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend><h1>{{ customer.surname }}</h1></legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        {% for bankaccount in customer.bankaccount_set.all %}
+            <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ bankaccount.id }}">
+            <label for="choice{{ forloop.counter }}">{{ bankaccount.account_number }}</label><br>
+        {% endfor %}
+    </fieldset>
+    <input type="submit" value="Vote">
+    </form>
+
+</body>
+</html>
